@@ -130,12 +130,18 @@ app.get('/allrecipes', async (req, res) => {
 // Fetch a single recipe by ID
 app.get('/recipes/:id', async (req, res) => {
   try {
-    const recipe = await RecipeModel.findById(req.params.id);
-    if (!recipe) return res.status(404).json({ message: 'Recipe not found' });
-    res.json(recipe);
+      const recipe = await RecipeModel.findById(req.params.id)
+          .populate('ingredients', 'name')  // Populate ingredient names
+          .populate('subIngredients', 'name');  // Populate sub-ingredient names
+
+      if (!recipe) {
+          return res.status(404).json({ message: 'Recipe not found' });
+      }
+
+      res.json(recipe);
   } catch (error) {
-    console.error('Error fetching recipe:', error);
-    res.status(500).json({ message: 'Server error' });
+      console.error('Error fetching recipe:', error);
+      res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -188,7 +194,7 @@ app.post('/sub-ingredients', async (req, res) => {
 
 //post request to add recipes 
 app.post('/recipes', async (req, res) => {
-  const { recipeName, ingredientNamesArray, subIngredientNamesArray, steps,createdAt } = req.body;
+  const { recipeName, ingredients, subIngredients, steps, createdAt } = req.body;
 
   try {
     const token = req.headers.authorization.split(' ')[1];
@@ -197,17 +203,13 @@ app.post('/recipes', async (req, res) => {
 console.log("firstname=>",firstName)
 console.log("decoded=>",decoded)
 
-// Convert ingredient names to ObjectIds before saving if necessary
-const ingredientDocs = await Ingredient.find({ name: { $in: ingredientNamesArray } });
-const ingredientIds = ingredientDocs.map((doc) => doc._id);
-
-// Convert sub-ingredient names to ObjectIds before saving if necessary
-const subIngredientDocs = await SubIngredient.find({ name: { $in: subIngredientNamesArray } });
-const subIngredientIds = subIngredientDocs.map((doc) => doc._id);
+// Convert ingredient IDs to ObjectIds before saving
+// const ingredientIds = ingredients; 
+// const subIngredientIds = subIngredients; 
     const recipe = new RecipeModel({
       recipeName,
-      ingredientIds,
-      subIngredientIds,
+      ingredients,
+      subIngredients,
       steps,
       createdAt:createdAt,
       createdBy: firstName,
