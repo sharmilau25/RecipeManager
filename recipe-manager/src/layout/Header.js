@@ -1,7 +1,17 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const navigate = useNavigate();
+    
+    // Check if the user is logged in by checking the token in localStorage
+    const isLoggedIn = !!localStorage.getItem('token');
+
+    // Handle logout
+    const handleLogout = () => {
+        localStorage.removeItem('token');  // Remove token from localStorage
+        navigate('/');  // Redirect to home page
+    };
   return (
     <>
       <div className='conatiner'>
@@ -24,9 +34,15 @@ const Header = () => {
           </ul>
         </div>
         <div className='p-2'>
-          <Link to="/login" className='btn border border-warning '>Login</Link>
-          <Link to="/signup" className='btn border border-warning ms-2'>Sign Up</Link>
-        </div>    
+                                    {isLoggedIn ? (
+                                        <button onClick={handleLogout} className='btn border border-warning'>Logout</button>
+                                    ) : (
+                                        <>
+                                            <Link to="/login" className='btn border border-warning'>Login</Link>
+                                            <Link to="/signup" className='btn border border-warning ms-2'>Sign Up</Link>
+                                        </>
+                                    )}
+                                </div>   
     </div>
   </div>
 </nav>
