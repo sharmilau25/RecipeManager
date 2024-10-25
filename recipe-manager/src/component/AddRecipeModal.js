@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
 
 const AddRecipeModal = ({ show, onClose, onSave }) => {
@@ -12,6 +12,7 @@ const AddRecipeModal = ({ show, onClose, onSave }) => {
     const [selectedSubIngredient, setSelectedSubIngredient] = useState('');
 
     const userFirstName = localStorage.getItem('firstName');
+
     useEffect(() => {
         const fetchIngredients = async () => {
             try {
@@ -35,52 +36,53 @@ const AddRecipeModal = ({ show, onClose, onSave }) => {
         fetchSubIngredients();
     }, []);
 
-    const handleIngredientAdd = () => {
+    const handleIngredientAdd = (e) => {
+        e.preventDefault(); 
         if (selectedIngredient && !selectedIngredients.includes(selectedIngredient)) {
             setSelectedIngredients([...selectedIngredients, selectedIngredient]);
-            setSelectedIngredient(''); // Clear the dropdown
         }
+        setSelectedIngredient(''); // Reset the select dropdown
     };
 
-    const handleSubIngredientAdd = () => {
+    const handleSubIngredientAdd = (e) => {
+        e.preventDefault(); // Prevent page refresh
         if (selectedSubIngredient && !selectedSubIngredients.includes(selectedSubIngredient)) {
             setSelectedSubIngredients([...selectedSubIngredients, selectedSubIngredient]);
-            setSelectedSubIngredient(''); // Clear the dropdown
         }
+        setSelectedSubIngredient(''); // Reset the select dropdown
     };
 
-    const handleIngredientRemove = (ingredient) => {
-        setSelectedIngredients(selectedIngredients.filter(item => item !== ingredient));
+    const handleIngredientRemove = (ingredientId) => {
+        setSelectedIngredients(selectedIngredients.filter(id => id !== ingredientId));
     };
 
-    const handleSubIngredientRemove = (subIngredient) => {
-        setSelectedSubIngredients(selectedSubIngredients.filter(item => item !== subIngredient));
+    const handleSubIngredientRemove = (subIngredientId) => {
+        setSelectedSubIngredients(selectedSubIngredients.filter(id => id !== subIngredientId));
     };
 
     const handleSave = async () => {
+        console.log("selectedIngredients=>",selectedIngredients)
         const recipeData = {
             recipeName,
             ingredients: selectedIngredients,
             subIngredients: selectedSubIngredients,
             steps,
             createdAt: new Date().toISOString(),
-            createdBy: userFirstName, // Include the user's first name
+            createdBy: userFirstName,
         };
 
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post('http://localhost:5000/recipes', recipeData,{
+            const response = await axios.post('http://localhost:5000/recipes', recipeData, {
                 headers: {
-                  Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
                 },
-              });
-              console.log("recipeData=>",recipeData)
-            console.log('Recipe saved successfully:', response.data);
-            onSave(response.data);  // Trigger the onSave callback with the new recipe data
+            });
+            console.log("Recipe saved successfully:", response.data);
+            onSave(response.data); // Trigger onSave callback with new recipe data
             onClose(); // Close the modal after saving
         } catch (error) {
             console.error('Error saving recipe:', error);
-            // Optionally, show an error message to the user here
         }
     };
 
@@ -105,7 +107,8 @@ const AddRecipeModal = ({ show, onClose, onSave }) => {
                                 />
                             </div>
                         </div>
-                       
+
+                        {/* Ingredient Selection and Display */}
                         <div className="input-field mt-2 row g-3 align-items-center">
                             <div className="col-auto">
                                 <label>Ingredients</label>
@@ -126,18 +129,17 @@ const AddRecipeModal = ({ show, onClose, onSave }) => {
                         {/* Display selected ingredients */}
                         <div className="selected-items mt-2">
                             {selectedIngredients.map(ingredientId => {
-                                // Find the ingredient object from the ingredients array using the ID
                                 const ingredient = ingredients.find(ing => ing._id === ingredientId);
-                                return ingredient ? ( // Check if ingredient exists
+                                return ingredient ? (
                                     <div className='mt-2' key={ingredientId}>
-                                        <span>{ingredient.name}</span> {/* Display the ingredient name */}
+                                        <span>{ingredient.name}</span>
                                         <button className='btn border-warning ms-2' onClick={() => handleIngredientRemove(ingredientId)}>Remove</button>
                                     </div>
-                                ) : null; // Return null if the ingredient isn't found
+                                ) : null;
                             })}
                         </div>
 
-
+                        {/* Sub-Ingredient Selection and Display */}
                         <div className="input-field mt-2 row g-3 align-items-center">
                             <div className="col-auto">
                                 <label>Sub-Ingredients</label>
@@ -154,21 +156,21 @@ const AddRecipeModal = ({ show, onClose, onSave }) => {
                                 <button className='btn border-warning ms-2' onClick={handleSubIngredientAdd}>Add</button>
                             </div>
                         </div>
-                        
+
                         {/* Display selected sub-ingredients */}
                         <div className="selected-items mt-2">
                             {selectedSubIngredients.map(subIngredientId => {
-                                // Find the ingredient object from the ingredients array using the ID
                                 const subingredient = subIngredients.find(ing => ing._id === subIngredientId);
-                                return subingredient ? ( // Check if ingredient exists
+                                return subingredient ? (
                                     <div className='mt-2' key={subIngredientId}>
-                                        <span>{subingredient.name}</span> {/* Display the ingredient name */}
+                                        <span>{subingredient.name}</span>
                                         <button className='btn border-warning ms-2' onClick={() => handleSubIngredientRemove(subIngredientId)}>Remove</button>
                                     </div>
-                                ) : null; // Return null if the ingredient isn't found
+                                ) : null;
                             })}
                         </div>
 
+                        {/* Steps and Actions */}
                         <div className="input-field mt-2 row g-3 align-items-center">
                             <div className="col-auto">
                                 <label>Steps</label>

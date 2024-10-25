@@ -40,7 +40,7 @@ const Login = () => {
 const handleLogout = () => {
   localStorage.removeItem('token');  // Remove token from localStorage
   setIsLoggedIn(false);  // Update login state
-  navigate('/dashboard');  // Redirect to home or login page
+  navigate('/');  // Redirect to home or login page
 };
 return (
   <div>
