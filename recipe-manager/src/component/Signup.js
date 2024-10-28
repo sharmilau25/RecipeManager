@@ -47,6 +47,7 @@ const Signup = () => {
       console.log('Response:', response.data); // Log the response
       // If registration is successful, show success message
       setSuccess('User registered successfully!');
+      localStorage.setItem('firstName',user.firstName)//to store user's firstname in localstorage
     } catch (error) {
       setError(error.response?.data?.message || 'There was an error registering the user');
     }

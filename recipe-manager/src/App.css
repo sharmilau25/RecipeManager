@@ -49,7 +49,6 @@
   transition: all 0.3s ease;
 }
 
-
 .wrapper .form .inputfield .input:focus,
 .wrapper .form .inputfield .textarea:focus{
   border: 1px solid #39ace7;
@@ -59,8 +58,6 @@
    font-size: 14px;
    color: #757575;
 }
-
-
 
 .wrapper .form .inputfield .btn{
   width: 100%;
@@ -126,3 +123,9 @@
   background-color: aliceblue;
 }
 /* Modal end */
+
+/*Dashboard start*/
+.nameStyle{
+  color: green;
+}
+/*Dashboard end*/

@@ -35,7 +35,9 @@ const Header = () => {
         </div>
         <div className='p-2'>
                                     {isLoggedIn ? (
-                                        <button onClick={handleLogout} className='btn border border-warning'>Logout</button>
+                                        
+                                        <span><button onClick={handleLogout} className='btn border border-warning'>Logout</button>
+                                        <Link to='/dashboard' className='btn border-warning ms-2'><span></span>Dashboard</Link></span>
                                     ) : (
                                         <>
                                             <Link to="/login" className='btn border border-warning'>Login</Link>

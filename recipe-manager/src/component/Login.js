@@ -27,7 +27,8 @@ const Login = () => {
         console.log("response=>",response);
         // Save the token in localStorage/sessionStorage
         localStorage.setItem('token', response.data.token);
-
+        localStorage.setItem('firstName',response.data.firstName);
+        console.log("resp=>",response.data)
         setIsLoggedIn(true); // update the login state
         // Redirect to a protected route (e.g., dashboard)
         navigate('/dashboard');
@@ -39,6 +40,7 @@ const Login = () => {
 // Handle logout
 const handleLogout = () => {
   localStorage.removeItem('token');  // Remove token from localStorage
+  localStorage.removeItem('firstName')//remove firstname
   setIsLoggedIn(false);  // Update login state
   navigate('/');  // Redirect to home or login page
 };

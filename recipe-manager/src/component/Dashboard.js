@@ -5,13 +5,20 @@ import AddIngredientModal from './AddIngredientModal';
 import AddSubIngredientModal from './AddSubIngredientModal';  
 
 const Dashboard = () => {
- 
+    const [firstName, setFirstName] = useState('');
     const [ingredients, setIngredients] = useState([]);
     const [subIngredients, setSubIngredients] = useState([]);
     const [showRecipeModal, setShowRecipeModal] = useState(false);
     const [showIngredientModal, setShowIngredientModal] = useState(false);
     const [showSubIngredientModal, setShowSubIngredientModal] = useState(false);
 
+    //to display firstname
+    useEffect(() => {
+        const storedFirstName = localStorage.getItem('firstName');
+        if (storedFirstName) {
+            setFirstName(storedFirstName);
+        }
+    }, []);
     // get ingredients and sub ingredients on component mount
     useEffect(() => {
         fetchIngredients();
@@ -56,6 +63,7 @@ const fetchSubIngredients = async () => {
         <div className='container'>
             <div className='row'>
                 <section className='mt-5'>
+                    <p>Welcome <em className='nameStyle'> {firstName}</em> to Recipe Manager, you can create recipes , add your own ingredients and sub-ingredients here.</p>
                     <button className='btn border-warning' onClick={() => setShowRecipeModal(true)}>Add Recipe</button>
                     <button className='btn border-warning ms-2' onClick={() => setShowIngredientModal(true)}>Add Ingredients</button>
                     <button className='btn border-warning ms-2' onClick={() => setShowSubIngredientModal(true)}>Add Sub-Ingredients</button>
