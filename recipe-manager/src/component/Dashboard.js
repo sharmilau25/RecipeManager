@@ -6,10 +6,36 @@ import AddSubIngredientModal from './AddSubIngredientModal';
 
 const Dashboard = () => {
  
+    const [ingredients, setIngredients] = useState([]);
+    const [subIngredients, setSubIngredients] = useState([]);
     const [showRecipeModal, setShowRecipeModal] = useState(false);
     const [showIngredientModal, setShowIngredientModal] = useState(false);
     const [showSubIngredientModal, setShowSubIngredientModal] = useState(false);
 
+    // get ingredients and sub ingredients on component mount
+    useEffect(() => {
+        fetchIngredients();
+        fetchSubIngredients();
+    }, []);
+
+const fetchIngredients = async () => {
+    try {
+        const res = await axios.get('http://localhost:5000/ingredients');
+        setIngredients(res.data);
+    } catch (error) {
+        console.error('Error fetching ingredients:', error);
+    }
+};
+
+const fetchSubIngredients = async () => {
+    try {
+        const res = await axios.get('http://localhost:5000/sub-ingredients');
+        setSubIngredients(res.data);
+        console.log(res.data)
+    } catch (error) {
+        console.error('Error fetching sub-ingredients:', error);
+    }
+};
 
     const handleSaveRecipe = (recipeData) => {
         console.log('Recipe saved:', recipeData);
@@ -38,6 +64,10 @@ const Dashboard = () => {
                 <AddRecipeModal
                     show={showRecipeModal}
                     onClose={() => setShowRecipeModal(false)}
+                    ingredients={ingredients}
+                    subIngredients={subIngredients}
+                    fetchIngredients={fetchIngredients}
+                    fetchSubIngredients={fetchSubIngredients}
                     onSave={handleSaveRecipe}
                 />
 
@@ -50,6 +80,8 @@ const Dashboard = () => {
                 <AddSubIngredientModal
                     show={showSubIngredientModal}
                     onClose={() => setShowSubIngredientModal(false)}
+                    ingredients={ingredients}
+                    fetchIngredients={fetchIngredients}
                     onSave={handleSaveSubIngredient}
                 />
             </div>

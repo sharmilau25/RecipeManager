@@ -7,12 +7,12 @@ const AddIngredientModal = ({ show, onClose, onSave }) => {
 
     const handleSave = async () => {
         if (!ingredientName) return; // Ensure ingredient name is entered
-
         try {
             // Send POST request to save ingredient
             const response = await axios.post('http://localhost:5000/ingredients', { name: ingredientName });
-            onSave(response.data); // Pass the saved ingredient data to parent component
+            onSave(response.data); // send the saved ingredient data to dashboard
             setIngredientName(''); // Clear input field
+            alert("Ingerdient saved")
             onClose(); // Close modal
         } catch (error) {
             setError('Failed to save ingredient. Please try again.');

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
 
-const AddRecipeModal = ({ show, onClose, onSave }) => {
+const AddRecipeModal = ({ show, onClose, onSave,ingredients, subIngredients,fetchIngredients,fetchSubIngredients }) => {
     const [recipeName, setRecipeName] = useState('');
     const [steps, setSteps] = useState('');
-    const [ingredients, setIngredients] = useState([]);
-    const [subIngredients, setSubIngredients] = useState([]);
     const [selectedIngredients, setSelectedIngredients] = useState([]);
     const [selectedSubIngredients, setSelectedSubIngredients] = useState([]);
     const [selectedIngredient, setSelectedIngredient] = useState('');
@@ -13,28 +11,13 @@ const AddRecipeModal = ({ show, onClose, onSave }) => {
 
     const userFirstName = localStorage.getItem('firstName');
 
-    useEffect(() => {
-        const fetchIngredients = async () => {
-            try {
-                const res = await axios.get('http://localhost:5000/ingredients');
-                setIngredients(res.data);
-            } catch (error) {
-                console.error('Error fetching ingredients:', error);
+        //useEffect to update ingredients,sub ingredients on modal open
+        useEffect(() => {
+            if (show) {
+                fetchIngredients();
+                fetchSubIngredients();
             }
-        };
-
-        const fetchSubIngredients = async () => {
-            try {
-                const res = await axios.get('http://localhost:5000/sub-ingredients');
-                setSubIngredients(res.data);
-            } catch (error) {
-                console.error('Error fetching sub-ingredients:', error);
-            }
-        };
-
-        fetchIngredients();
-        fetchSubIngredients();
-    }, []);
+        }, [show, fetchIngredients, fetchSubIngredients])
 
     const handleIngredientAdd = (e) => {
         e.preventDefault(); 
@@ -42,9 +25,10 @@ const AddRecipeModal = ({ show, onClose, onSave }) => {
             setSelectedIngredients([...selectedIngredients, selectedIngredient]);
         }
         setSelectedIngredient(''); // Reset the select dropdown
+      
     };
 
-    const handleSubIngredientAdd = (e) => {
+    const handleSubIngredientAdd =  (e) => {
         e.preventDefault(); // Prevent page refresh
         if (selectedSubIngredient && !selectedSubIngredients.includes(selectedSubIngredient)) {
             setSelectedSubIngredients([...selectedSubIngredients, selectedSubIngredient]);
@@ -80,6 +64,7 @@ const AddRecipeModal = ({ show, onClose, onSave }) => {
             });
             console.log("Recipe saved successfully:", response.data);
             onSave(response.data); // Trigger onSave callback with new recipe data
+            alert("Recipe saved")
             onClose(); // Close the modal after saving
         } catch (error) {
             console.error('Error saving recipe:', error);

@@ -1,25 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const AddSubIngredientModal = ({ show, onClose, onSave }) => {
-    const [ingredients, setIngredients] = useState([]);  // List of ingredients from DB
+const AddSubIngredientModal = ({ show, onClose, onSave, ingredients,fetchIngredients }) => {
+    
     const [selectedIngredient, setSelectedIngredient] = useState(''); // Selected ingredient ID
     const [subIngredientName, setSubIngredientName] = useState(''); // New sub-ingredient name
-
-    // Fetch ingredients on component mount
-    useEffect(() => {
-        const fetchIngredients = async () => {
-            try {
-                const res = await axios.get('http://localhost:5000/ingredients');
-                setIngredients(res.data);  // Assume API returns a list of ingredients
-            } catch (error) {
-                console.error('Error fetching ingredients:', error);
-            }
-        };
-
-        fetchIngredients();
-    }, []);
-
+//useEffect to update ingredients on modal open
+    useEffect(()=>
+    {
+        if(show)
+        {
+            fetchIngredients();
+        }
+    },[show,fetchIngredients])
     // Handle save button click
     const handleSave = async () => {
         if (selectedIngredient && subIngredientName) {
@@ -29,9 +22,11 @@ const AddSubIngredientModal = ({ show, onClose, onSave }) => {
                     ingredientId: selectedIngredient,
                     name: subIngredientName,
                 });
-
                 // Notify parent component and close modal
                 onSave(response.data);
+                setSelectedIngredient('')
+                setSubIngredientName('')
+                alert("Sub-ingerdient saved")
                 onClose();
             } catch (error) {
                 console.error('Error saving sub-ingredient:', error);
