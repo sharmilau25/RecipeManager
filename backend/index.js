@@ -107,7 +107,8 @@ app.post('/login', async (req, res) => {
 // Fetch recipes from logged-in user
 app.get('/recipes', verifyToken, async (req, res) => {
   try {
-      const userId = req.userId; // Ensure req.userId is set in your verifyToken middleware
+      const userId = req.firstName; // Ensure req.userId is set in your verifyToken middleware
+      console.log("userid=>",req);
       const recipes = await RecipeModel.find({ userId: userId }); // Make sure to use the correct field
       res.status(200).json({ recipes });
   } catch (error) {
@@ -223,7 +224,34 @@ console.log("decoded=>",decoded)
   }
 });
 
+// Delete recipe by ID
+app.delete('/recipes/:recipeId', verifyToken, async (req, res) => {
+  const { recipeId } = req.params;
+  console.log("recipeid in backend=>",recipeId);
 
+ // Verify that recipeId is a valid MongoDB ObjectId
+ if (!mongoose.Types.ObjectId.isValid(recipeId)) {
+  return res.status(400).json({ message: 'Invalid recipe ID' });
+}
+  try {
+    //check for the recipe to be deleted
+    const recipeToDelete = await RecipeModel.findById(recipeId);
+      console.log("Recipe found=>", recipeToDelete);
+
+      // Find the recipe by ID and delete it
+      const deletedRecipe = await RecipeModel.findByIdAndDelete(recipeId);
+
+      // Check if recipe was found and deleted
+      if (!deletedRecipe) {
+          return res.status(404).json({ message: 'Recipe not found' });
+      }
+
+      res.status(200).json({ message: 'Recipe deleted successfully' });
+  } catch (error) {
+      console.error('Error deleting recipe:', error);
+      res.status(500).json({ message: 'Server error. Unable to delete recipe.' });
+  }
+});
 
   // Start the server
   const PORT = process.env.PORT || 5000;
