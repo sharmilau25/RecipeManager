@@ -34,15 +34,15 @@ const AllRecipes = () => {
             ) : recipes.length === 0 ? (
                 <p>No recipes available!</p>
             ) : (
-                <ul>
+                <ol>
         {recipes.map((recipe) => (
           <li key={recipe._id}>
-            <Link to={`/recipes/${recipe._id}`}>
+            <Link to={`/recipes/${recipe._id}`} state={{ from: 'allRecipes' }}>
               {recipe.recipeName} by {recipe.createdBy}
             </Link>
           </li>
         ))}
-      </ul>
+      </ol>
             )}
         </div>
     );

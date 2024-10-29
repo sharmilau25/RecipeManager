@@ -30,7 +30,7 @@ const Login = () => {
         localStorage.setItem('firstName',response.data.firstName);
         console.log("resp=>",response.data)
         setIsLoggedIn(true); // update the login state
-        // Redirect to a protected route (e.g., dashboard)
+      //redirect to dashboard
         navigate('/dashboard');
     } catch (error) {
         setError(error.response?.data?.message || 'Login failed. Please try again.');
